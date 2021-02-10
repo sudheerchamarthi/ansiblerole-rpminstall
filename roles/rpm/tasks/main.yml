@@ -1,0 +1,35 @@
+---
+#Query the package and read version installed
+- name: check if package is installed
+  command: rpm -qa {{ PACKAGE_NAME }}
+  register: package_install
+
+# If it is already at latest version, post a message
+- debug:
+    msg: "Latest Package already installed - {{ package_install.stdout }}"
+  when: PACKAGE_VERSION in package_install.stdout
+
+# If it is not latest, copy the binary
+- name: Copy the package to /tmp
+  copy:
+    src: "{{ PACKAGE_FILE }}"
+    dest: "/tmp/{{ PACKAGE_FILE }}"
+  when: PACKAGE_VERSION not in  package_install.stdout
+
+# Install latest the package
+- name: Install latest package
+  yum:
+     name: "/tmp/{{ PACKAGE_FILE }}"
+     state: present
+     disable_gpg_check: yes
+  when: PACKAGE_VERSION not in  package_install.stdout
+
+# Start the service if it is not running
+- name: Start and enable the service
+  ansible.builtin.service:
+    name: "{{ SERVICE_NAME }}"
+    state: started
+    enabled: yes
+# Post message that service is running 
+- debug:
+    msg: "Service {{ SERVICE_NAME }} is running"

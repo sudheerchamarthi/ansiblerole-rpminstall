@@ -1,0 +1,9 @@
+---
+# Package name we eed to query
+PACKAGE_NAME: apacheds
+#Expected latest version
+PACKAGE_VERSION: 2.0.0
+#RPM file path
+PACKAGE_FILE: apacheds-2.0.0.AM26-x86_64.rpm
+# Name of the service to start 
+SERVICE_NAME: apacheds-2.0.0.AM26-default
